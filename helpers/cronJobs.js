@@ -1,16 +1,17 @@
 const CronJob = require('cron').CronJob;
+const commands = require('./commands.js');
 
 module.exports = {
-  makeChecker: (client) => {
+  makeChecker: () => {
     // const checker = new CronJob('* * * * * *', () => {
     const checker = new CronJob('59 0 * * * *', () => {
       console.log('ping');
     });
     return checker;
   },
-  makeDaily: (timeOfLastPurge) => {
+  makeDaily: (client, timeOfLastPurge) => {
     const daily = new CronJob('0 0 7 * * *', () => {
-        handlePurge();
+        commands.purge(client, timeOfLastPurge);
         timeOfLastPurge = new Date().getTime();
       },
       () => {

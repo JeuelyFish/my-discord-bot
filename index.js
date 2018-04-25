@@ -36,7 +36,7 @@ const handleCommand = (message) => {
 
 client.on('ready', () => {
   console.log('Ready!');
-  const daily = crons.makeDaily(timeOfLastPurge);
+  const daily = crons.makeDaily(client, timeOfLastPurge);
   const checker = crons.makeChecker();
   daily.start();
   checker.start();
