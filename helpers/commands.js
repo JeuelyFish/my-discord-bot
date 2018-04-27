@@ -23,7 +23,7 @@ module.exports = {
       })
       .then(msgString => channel.send(msgString))
       .then(msg => console.log(`Sent msg: ${msg.content}`))
-      .catch(console.error);
+      .catch(err => common.logError(err, channel));
   },
   defaultDelete: function(client) {
     const channel = common.getGeneralChat(client);
@@ -35,7 +35,7 @@ module.exports = {
         const deleted = filtered.deleteAll();
         channel.send(`collected ${messages.size} messages and then deleted ${filtered.array().length}`);
       })
-      .catch(console.error);
+      .catch(err => common.logError(err, channel));
   },
   bulkDelete: function(client, splitMsg) {
     const channel = common.getGeneralChat(client);
@@ -46,7 +46,7 @@ module.exports = {
           console.log(`Bulk deleted ${response.size} messages`)
           channel.send(`Bulk deleted ${response.size} messages`);
         })
-        .catch(console.error);
+        .catch(err => common.logError(err, channel));
     }
   }
 };
