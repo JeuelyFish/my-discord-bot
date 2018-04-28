@@ -1,13 +1,12 @@
 const Common = require('./common.js');
 
 module.exports = class Commands {
-    constructor(client) {
-        this.client = client;
-        this.cmn = new Common(client);
+    constructor(channel) {
+        this.channel = channel;
     }
 
     purge(timeOfLastPurge) {
-        const channel = this.cmn.generalChat;
+        const channel = this.channel;
         channel.fetchMessages({
                 limit: 100
             })
@@ -32,7 +31,7 @@ module.exports = class Commands {
     }
 
     defaultDelete() {
-        const channel = this.cmn.generalChat;
+        const channel = this.channel;
         channel.fetchMessages({
                 limit: 5
             })
@@ -46,7 +45,7 @@ module.exports = class Commands {
 
 
     bulkDelete(splitMsg) {
-        const channel = this.cmn.generalChat;
+        const channel = this.channel;
         const int = parseInt(splitMsg[1])
         if (typeof int === "number") {
             channel.bulkDelete(int)

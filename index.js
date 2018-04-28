@@ -1,15 +1,32 @@
-const CronJob = require('cron').CronJob;
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const crons = require('./helpers/cronJobs.js');
 const Common = require('./helpers/common.js');
 const Commands = require('./helpers/commands.js');
-const crons = require('./helpers/cronJobs.js');
 
 //
 //
-const cmn = new Common(client);
-const cmd = new Commands(client, cmn.generalChat);
-let timeOfLastPurge = 1524877098000;
+let timeOfLastPurge = 1524198050000;
+let cmn = new Common(client);
+let cmd; //commands
+
+client.on('ready', () => {
+  cmd = new Commands(cmn.generalChat);
+  console.log("READY!")
+
+    console.log(cmd)
+    const purgeAndUpdateTime = () => {
+      cmd.purge(timeOfLastPurge);
+      timeOfLastPurge = new Date().getTime();
+    }
+    const daily = crons.makeDaily(purgeAndUpdateTime);
+    const checker = crons.makeChecker();
+    daily.start();
+    checker.start();
+});
+
+
+
 
 
 //
@@ -38,13 +55,7 @@ const handleCommand = (message) => {
 }
 
 
-client.on('ready', () => {
-    console.log("READY!")
-    const daily = crons.makeDaily(client, timeOfLastPurge);
-    const checker = crons.makeChecker();
-    daily.start();
-    checker.start();
-});
+
 
 client.on('message', message => {
     if (message.content.indexOf('!') === 0) {
