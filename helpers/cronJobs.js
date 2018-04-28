@@ -10,7 +10,7 @@ module.exports = {
   makeDaily: (cronFunction) => {
     const daily = new CronJob('0 0 7 * * *', cronFunction,
       () => {
-        console.log('DAILY JOB HAS STOPPED!')
+        console.info('DAILY JOB HAS STOPPED!')
       },
       false,
       'America/Los_Angeles'
