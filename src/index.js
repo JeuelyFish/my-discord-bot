@@ -1,13 +1,12 @@
 import { Client } from 'discord.js';
 import {getGeneralChat, isJeuely, isBot, logError} from './helpers/common.js';
 import {bulkDelete, defaultDelete, purge} from './helpers/commands.js';
-
-const crons = require('./helpers/cronJobs.js');
+import {makeChecker, makeDaily} from './helpers/cronJobs.js';
 
 //
 //
 const client = new Client();
-let timeOfLastPurge = 1524198050000; //time for crons
+let timeOfLastPurge = 1525149600000; //time for crons
 
 client.on('ready', () => {
   // set up crons
@@ -15,8 +14,8 @@ client.on('ready', () => {
     purge(getGeneralChat(client), timeOfLastPurge);
     timeOfLastPurge = new Date().getTime();
   }
-  const daily = crons.makeDaily(purgeAndUpdateTime);
-  const checker = crons.makeChecker();
+  const daily = makeDaily(purgeAndUpdateTime);
+  const checker = makeChecker();
   daily.start();
   checker.start();
 
@@ -33,7 +32,7 @@ const handleCommand = (message) => {
   const channel = getGeneralChat(client);
 
   if (!isJeuely(author.id)) {
-    message.reply('NO! YOU BAD!');
+    message.reply('I love you');
     return;
   }
 
@@ -58,7 +57,7 @@ client.on('message', message => {
     handleCommand(message)
   }
   if (message.isMentioned('434765029816926218') && !isJeuely(message.author.id)) {
-    message.reply(`Don't talk to me right now!`);
+    message.reply(`You are an amazing person and I'm glad to know you!`);
   }
 });
 
