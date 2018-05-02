@@ -1,13 +1,14 @@
 'use strict';
 
-var Discord = require('discord.js');
-var client = new Discord.Client();
+var _discord = require('discord.js');
+
 var crons = require('./helpers/cronJobs.js');
 var Common = require('./helpers/common.js');
 var Commands = require('./helpers/commands.js');
 
 //
 //
+var client = new _discord.Client();
 var timeOfLastPurge = 1524198050000; //time for crons
 var cmn = new Common(client); //common helpers
 var cmd = void 0; //commands

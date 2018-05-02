@@ -1,11 +1,11 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
+import { Client } from 'discord.js';
 const crons = require('./helpers/cronJobs.js');
 const Common = require('./helpers/common.js');
 const Commands = require('./helpers/commands.js');
 
 //
 //
+const client = new Client();
 let timeOfLastPurge = 1524198050000; //time for crons
 let cmn = new Common(client); //common helpers
 let cmd; //commands
