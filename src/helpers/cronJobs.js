@@ -1,4 +1,4 @@
-const CronJob = require('cron').CronJob;
+import {CronJob} from 'cron';
 
 module.exports = {
   makeChecker: () => {
