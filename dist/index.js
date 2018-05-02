@@ -2,24 +2,21 @@
 
 var _discord = require('discord.js');
 
+var _common = require('./helpers/common.js');
+
+var _commands = require('./helpers/commands.js');
+
 var crons = require('./helpers/cronJobs.js');
-var Common = require('./helpers/common.js');
-var Commands = require('./helpers/commands.js');
 
 //
 //
 var client = new _discord.Client();
 var timeOfLastPurge = 1524198050000; //time for crons
-var cmn = new Common(client); //common helpers
-var cmd = void 0; //commands
 
 client.on('ready', function () {
-  // set up commands
-  cmd = new Commands(cmn.generalChat, cmn.logError);
-
   // set up crons
   var purgeAndUpdateTime = function purgeAndUpdateTime() {
-    cmd.purge(timeOfLastPurge);
+    (0, _commands.purge)((0, _common.getGeneralChat)(client), timeOfLastPurge);
     timeOfLastPurge = new Date().getTime();
   };
   var daily = crons.makeDaily(purgeAndUpdateTime);
@@ -36,22 +33,23 @@ client.on('ready', function () {
 var handleCommand = function handleCommand(message) {
   var msgContent = message.content;
   var author = message.author;
+  var channel = (0, _common.getGeneralChat)(client);
 
-  if (!cmn.isJeuely(author.id)) {
+  if (!(0, _common.isJeuely)(author.id)) {
     message.reply('NO! YOU BAD!');
     return;
   }
 
   if (msgContent.indexOf('!purge') === 0) {
-    cmd.purge(timeOfLastPurge);
+    (0, _commands.purge)(channel, timeOfLastPurge);
   }
 
   if (msgContent.indexOf('!delete') === 0) {
     var splitMsg = msgContent.split(' ');
     if (splitMsg.length === 1) {
-      cmd.defaultDelete();
+      (0, _commands.defaultDelete)(channel);
     } else {
-      cmd.bulkDelete(splitMsg);
+      (0, _commands.bulkDelete)(channel, splitMsg);
     }
   }
 };
@@ -62,7 +60,7 @@ client.on('message', function (message) {
   if (message.content.indexOf('!') === 0) {
     handleCommand(message);
   }
-  if (message.isMentioned('434765029816926218') && !cmn.isJeuely(message.author.id)) {
+  if (message.isMentioned('434765029816926218') && !(0, _common.isJeuely)(message.author.id)) {
     message.reply('Don\'t talk to me right now!');
   }
 });

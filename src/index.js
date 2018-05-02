@@ -1,22 +1,18 @@
 import { Client } from 'discord.js';
+import {getGeneralChat, isJeuely, isBot, logError} from './helpers/common.js';
+import {bulkDelete, defaultDelete, purge} from './helpers/commands.js';
+
 const crons = require('./helpers/cronJobs.js');
-const Common = require('./helpers/common.js');
-const Commands = require('./helpers/commands.js');
 
 //
 //
 const client = new Client();
 let timeOfLastPurge = 1524198050000; //time for crons
-let cmn = new Common(client); //common helpers
-let cmd; //commands
 
 client.on('ready', () => {
-  // set up commands
-  cmd = new Commands(cmn.generalChat, cmn.logError);
-
   // set up crons
   const purgeAndUpdateTime = () => {
-    cmd.purge(timeOfLastPurge);
+    purge(getGeneralChat(client), timeOfLastPurge);
     timeOfLastPurge = new Date().getTime();
   }
   const daily = crons.makeDaily(purgeAndUpdateTime);
@@ -34,22 +30,23 @@ client.on('ready', () => {
 const handleCommand = (message) => {
   const msgContent = message.content;
   const author = message.author;
+  const channel = getGeneralChat(client);
 
-  if (!cmn.isJeuely(author.id)) {
+  if (!isJeuely(author.id)) {
     message.reply('NO! YOU BAD!');
     return;
   }
 
   if (msgContent.indexOf('!purge') === 0) {
-    cmd.purge(timeOfLastPurge);
+    purge(channel, timeOfLastPurge);
   }
 
   if (msgContent.indexOf('!delete') === 0) {
     const splitMsg = msgContent.split(' ');
     if (splitMsg.length === 1) {
-      cmd.defaultDelete();
+      defaultDelete(channel);
     } else {
-      cmd.bulkDelete(splitMsg);
+      bulkDelete(channel, splitMsg);
     }
   }
 }
@@ -60,7 +57,7 @@ client.on('message', message => {
   if (message.content.indexOf('!') === 0) {
     handleCommand(message)
   }
-  if (message.isMentioned('434765029816926218') && !cmn.isJeuely(message.author.id)) {
+  if (message.isMentioned('434765029816926218') && !isJeuely(message.author.id)) {
     message.reply(`Don't talk to me right now!`);
   }
 });

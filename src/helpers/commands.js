@@ -1,13 +1,6 @@
-const Common = require('./common.js');
+import {logError} from './common.js';
 
-module.exports = class Commands {
-  constructor(channel, errorLogger) {
-    this.channel = channel;
-    this.errorLogger = errorLogger;
-  }
-
-  purge(timeOfLastPurge) {
-    const channel = this.channel;
+export const purge = (channel, timeOfLastPurge) => {
     channel.fetchMessages({
         limit: 100
       })
@@ -28,11 +21,10 @@ module.exports = class Commands {
       })
       .then(msgString => channel.send(msgString))
       .then(msg => console.info(`Sent msg: ${msg.content}`))
-      .catch(err => this.errorLogger(err, channel));
-  }
+      .catch(err => logError(channel, err));
+}
 
-  defaultDelete() {
-    const channel = this.channel;
+export const defaultDelete = (channel) => {
     channel.fetchMessages({
         limit: 5
       })
@@ -49,12 +41,11 @@ module.exports = class Commands {
           channel.send(`I deleted ${obj.originalSize} messages.`);
         })
       })
-      .catch(err => this.errorLogger(err, channel));
-  }
+      .catch(err => logError(channel, err));
+}
 
 
-  bulkDelete(splitMsg) {
-    const channel = this.channel;
+export const bulkDelete = (channel, splitMsg) => {
     const int = parseInt(splitMsg[1])
     if (typeof int === "number") {
       channel.bulkDelete(int)
@@ -62,7 +53,6 @@ module.exports = class Commands {
           console.info(`Bulk deleted ${response.size} messages`)
           channel.send(`Bulk deleted ${response.size} messages`);
         })
-        .catch(err => this.errorLogger(err, channel));
+        .catch(err => logError(channel, err));
     }
-  }
 }
