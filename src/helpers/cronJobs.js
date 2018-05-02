@@ -1,7 +1,7 @@
-import {CronJob} from 'cron';
+import { CronJob } from 'cron';
 
 export const makeChecker = () => {
-  const checker = new CronJob('* * * * * *', () => {
+  const checker = new CronJob('59 0 * * * *', () => {
     console.log('ping');
   });
   return checker;

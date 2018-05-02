@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
-import {getGeneralChat, isJeuely, isBot, logError} from './helpers/common.js';
-import {bulkDelete, defaultDelete, purge} from './helpers/commands.js';
-import {makeChecker, makeDaily} from './helpers/cronJobs.js';
+import { getGeneralChat, isJeuely, isBot, logError } from './helpers/common.js';
+import { bulkDelete, defaultDelete, purge } from './helpers/commands.js';
+import { makeChecker, makeDaily } from './helpers/cronJobs.js';
 
 //
 //
