@@ -1,5 +1,5 @@
 import { Client } from 'discord.js';
-import { getGeneralChat, isJeuely, isBot, logError } from './helpers/common.js';
+import { getGeneralChat, isJeuely, isBot, logError, getRandomUser } from './helpers/common.js';
 import { bulkDelete, defaultDelete, purge } from './helpers/commands.js';
 import { makeChecker, makeDaily } from './helpers/cronJobs.js';
 
@@ -9,9 +9,10 @@ const client = new Client();
 let timeOfLastPurge = 1525149600000; //time for crons
 
 client.on('ready', () => {
+    const generalChat = getGeneralChat(client);
   // set up crons
   const purgeAndUpdateTime = () => {
-    purge(getGeneralChat(client), timeOfLastPurge);
+    purge(generalChat, timeOfLastPurge);
     timeOfLastPurge = new Date().getTime();
   }
   const daily = makeDaily(purgeAndUpdateTime);
@@ -19,6 +20,8 @@ client.on('ready', () => {
   daily.start();
   checker.start();
 
+
+  console.log(getRandomUser(generalChat))
   // and say hello
   console.log("Hello World!")
 });

@@ -13,6 +13,10 @@ export const isBot = (userId) => {
   return parseInt(userId) === 434765029816926218;
 };
 
+export const getRandomUser = (channel) => {
+    return channel.members.random(1);
+};
+
 export const logError = (err) => {
   console.error(err);
   this.channel.send('ERROR: ' + err.message);
