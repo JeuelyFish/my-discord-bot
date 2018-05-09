@@ -4,13 +4,20 @@ export const getGeneralChat = (client) => {
   })
 }
 
-export const isJeuely = (userId) => {
-  return parseInt(userId) === 201180011317690369;
+export const isJeuely = (user) => {
+  return parseInt(user.id) === 201180011317690369;
 };
 
 
-export const isBot = (userId) => {
-  return parseInt(userId) === 434765029816926218;
+export const isChownk = (user) => {
+  return parseInt(user.id) === 434765029816926218;
+};
+
+export const isLoarf = (user) => {
+  return parseInt(user.id) === 434765029816926218;
+};
+export const isBot = (user) => {
+  return parseInt(user.id) === 434765029816926218;
 };
 
 export const getRandomUser = (channel) => {

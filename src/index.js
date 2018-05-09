@@ -1,6 +1,8 @@
 import { Client } from 'discord.js';
 import { getGeneralChat, isJeuely, isBot, logError, getRandomUser } from './helpers/common.js';
 import { bulkDelete, defaultDelete, purge } from './helpers/commands.js';
+import { complimentUser } from './helpers/compliments.js';
+
 import { makeChecker, makeDaily } from './helpers/cronJobs.js';
 
 //
@@ -20,8 +22,8 @@ client.on('ready', () => {
   daily.start();
   checker.start();
 
-
-  console.log(getRandomUser(generalChat))
+  console.log(generalChat.members)
+  // complimentUser(generalChat)
   // and say hello
   console.log("Hello World!")
 });
@@ -34,8 +36,8 @@ const handleCommand = (message) => {
   const author = message.author;
   const channel = getGeneralChat(client);
 
-  if (!isJeuely(author.id)) {
-    message.reply('I love you');
+  if (!isJeuely(author)) {
+    // message.reply('I love you');
     return;
   }
 
@@ -59,8 +61,10 @@ client.on('message', message => {
   if (message.content.indexOf('!') === 0) {
     handleCommand(message)
   }
-  if (message.isMentioned('434765029816926218') && !isJeuely(message.author.id)) {
-    message.reply(`You are an amazing person and I'm glad to know you!`);
+  message.mentions.users
+  if (message.isMentioned('434765029816926218') && !isJeuely(message.author)) {
+    // message.reply(`You are an amazing person and I'm glad to know you!`);
+    return;
   }
 });
 
