@@ -104,6 +104,5 @@ export const complimentUser = (user, channel) => {
 };
 
 export const complimentRandomUser = (channel) => {
-    const user = getRandomUser(channel);
-    return complimentUser(user, channel);
+    return complimentUser(getRandomUser(channel), channel);
 };

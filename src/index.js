@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
 import { getGeneralChat, isJeuely, isBot, logError, getRandomUser } from './helpers/common.js';
 import { bulkDelete, defaultDelete, purge } from './helpers/commands.js';
-import { complimentUser } from './helpers/compliments.js';
+import { complimentRandomUser } from './helpers/compliments.js';
 import { denyCommand, giveReply } from './helpers/replies.js';
 
 
@@ -24,7 +24,7 @@ client.on('ready', () => {
   daily.start();
   checker.start();
 
-  // complimentUser(generalChat)
+  complimentRandomUser(generalChat)
   // and say hello
   console.log("Hello World!")
 });
