@@ -9,12 +9,12 @@ export const isJeuely = (user) => {
 };
 
 
-export const isChownk = (user) => {
-  return parseInt(user.id) === 434765029816926218;
+export const isBezzaton = (user) => {
+  return parseInt(user.id) === 294996871896760321;
 };
 
 export const isLoarf = (user) => {
-  return parseInt(user.id) === 434765029816926218;
+  return parseInt(user.id) === 185957145253117952;
 };
 export const isBot = (user) => {
   return parseInt(user.id) === 434765029816926218;
