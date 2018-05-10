@@ -24,12 +24,16 @@ export const getRandomUser = (channel) => {
     return channel.members.random(1);
 };
 
-export const logSuccess = (response) => {
+export const logSuccess = (response, channel) => {
   console.info(response);
-  this.channel.send('SUCCESS: ' + response);
+  if(channel) {
+    channel.send('SUCCESS: ' + response);
+  }
 };
 
-export const logError = (err) => {
+export const logError = (err, channel) => {
   console.error(err);
-  this.channel.send('ERROR: ' + err.message);
+  if(channel){
+    channel.send('ERROR: ' + err.message);
+  }
 };

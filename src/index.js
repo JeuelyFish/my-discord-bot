@@ -4,8 +4,7 @@ import {
 import {
     sample,
     startsWith,
-    includes,
-    forEach
+    includes
 } from 'lodash';
 import {
     getGeneralChat,
@@ -20,8 +19,10 @@ import {
     purge
 } from './helpers/admin/commands.js';
 import {
-    complimentRandomUser,
-    complimentUser
+    complimentMentionedUsers
+} from './helpers/admin/responses.js';
+import {
+    complimentRandomUser
 } from './helpers/compliments.js';
 import {
     denyCommand,
@@ -97,12 +98,7 @@ const handleResponse = (message) => {
     const channel = getGeneralChat(client);
 
     if (includes(message.content, 'compliment')) {
-        const mentionedUsers = message.mentions.users.filter(function(user) {
-            return (!isJeuely(user) && !isBot(user))
-        }).array();
-        forEach(mentionedUsers, (user) => {
-            complimentUser(user, channel)
-        })
+        complimentMentionedUsers(message, channel);
     }
 
 }

@@ -21,7 +21,7 @@ export const purge = (channel, timeOfLastPurge) => {
     })
     .then(msgString => channel.send(msgString))
     .then(msg => console.info(`Sent msg: ${msg.content}`))
-    .catch(err => logError(channel, err));
+    .catch(err => logError(err, channel));
 }
 
 export const defaultDelete = (channel) => {
@@ -41,7 +41,7 @@ export const defaultDelete = (channel) => {
         channel.send(`I deleted ${obj.originalSize} messages.`);
       })
     })
-    .catch(err => logError(channel, err));
+    .catch(err => logError(err, channel));
 }
 
 
@@ -53,6 +53,6 @@ export const bulkDelete = (channel, splitMsg) => {
         console.info(`Bulk deleted ${response.size} messages`)
         channel.send(`Bulk deleted ${response.size} messages`);
       })
-      .catch(err => logError(channel, err));
+      .catch(err => logError(err, channel));
   }
 }

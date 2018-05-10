@@ -94,7 +94,6 @@ const getRandomCompliment = () => {
 
 const getRandomGreeting = () => {
     return sample(greetings);
-
 }
 
 export const complimentUser = (user, channel, includeGreeting) => {
