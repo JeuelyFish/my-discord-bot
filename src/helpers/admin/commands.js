@@ -1,4 +1,4 @@
-import { logError } from './common.js';
+import { logError } from '../common.js';
 
 export const purge = (channel, timeOfLastPurge) => {
   channel.fetchMessages({

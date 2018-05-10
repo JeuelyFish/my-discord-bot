@@ -97,12 +97,12 @@ const getRandomGreeting = () => {
 
 }
 
-export const complimentUser = (user, channel) => {
+export const complimentUser = (user, channel, includeGreeting) => {
     const compliment = getRandomCompliment();
     const greeting = getRandomGreeting();
-    channel.send(`${greeting} ${user}. ${compliment}`);
+    channel.send(`${includeGreeting ? greeting : ''} ${user}. ${compliment}`);
 };
 
 export const complimentRandomUser = (channel) => {
-    return complimentUser(getRandomUser(channel), channel);
+    return complimentUser(getRandomUser(channel), channel, true);
 };

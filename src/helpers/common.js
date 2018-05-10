@@ -24,6 +24,11 @@ export const getRandomUser = (channel) => {
     return channel.members.random(1);
 };
 
+export const logSuccess = (response) => {
+  console.info(response);
+  this.channel.send('SUCCESS: ' + response);
+};
+
 export const logError = (err) => {
   console.error(err);
   this.channel.send('ERROR: ' + err.message);
