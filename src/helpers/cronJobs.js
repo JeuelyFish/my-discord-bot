@@ -24,8 +24,7 @@ export const dailyCompliment = (client) => {
       setTimeout(function() {
           complimentRandomUser(getGeneralChat(client));
           console.log("compliment sent");
-      // }, random(3600000, 43200000));
-    }, random(10000, 15000));
+      }, random(3600000, 43200000));
   });
   return compliment;
 }
