@@ -20,11 +20,12 @@ export const dailyPurge = (client, timeOfLastPurge) => {
 }
 
 export const dailyCompliment = (client) => {
-  const checker = new CronJob('10 * * * * *', () => {
+  const compliment = new CronJob('0 0 7 * * *', () => {
       setTimeout(function() {
           complimentRandomUser(getGeneralChat(client));
+          console.log("compliment sent");
       // }, random(3600000, 43200000));
     }, random(10000, 15000));
   });
-  return checker;
+  return compliment;
 }
