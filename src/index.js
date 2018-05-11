@@ -1,39 +1,11 @@
-import {
-    Client
-} from 'discord.js';
-import {
-    sample,
-    startsWith,
-    includes
-} from 'lodash';
-import {
-    getGeneralChat,
-    isJeuely,
-    isBot,
-    logError,
-    getRandomUser
-} from './helpers/common.js';
-import {
-    bulkDelete,
-    defaultDelete,
-    purge
-} from './helpers/admin/commands.js';
-import {
-    complimentMentionedUsers
-} from './helpers/admin/responses.js';
-import {
-    complimentRandomUser
-} from './helpers/compliments.js';
-import {
-    denyCommand,
-    giveReply
-} from './helpers/replies.js';
-
-
-import {
-    makeChecker,
-    makeDaily
-} from './helpers/cronJobs.js';
+import { Client } from 'discord.js';
+import { sample, startsWith, includes } from 'lodash';
+import { getGeneralChat, isJeuely, isBot, logError, getRandomUser } from './helpers/common.js';
+import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands.js';
+import { complimentMentionedUsers } from './helpers/admin/responses.js';
+import { complimentRandomUser } from './helpers/compliments.js';
+import { denyCommand, giveReply } from './helpers/replies.js';
+import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs.js';
 
 //
 //
@@ -41,24 +13,10 @@ const client = new Client();
 let timeOfLastPurge = 1525149600000; //time for crons
 
 client.on('ready', () => {
-    const generalChat = getGeneralChat(client);
     // set up crons
-    const purgeAndUpdateTime = () => {
-        purge(generalChat, timeOfLastPurge);
-        timeOfLastPurge = new Date().getTime();
-    }
-    const sendRandomCompliment = () => {
-        setTimeout(function() {
-            complimentRandomUser(generalChat);
-        }, random(3600000, 43200000));
-    }
-
-    const dailyPurge = makeDaily(purgeAndUpdateTime);
-    const dailyCompliment = makeDaily(purgeAndUpdateTime);
-    const checker = makeChecker();
-    dailyPurge.start();
-    dailyCompliment.start();
-    checker.start();
+    dailyPurge(client, timeOfLastPurge).start();
+    dailyCompliment(client).start()
+    checker().start();
 
     // and say hello
     console.log("Hello World!")
