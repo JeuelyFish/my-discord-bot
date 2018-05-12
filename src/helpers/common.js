@@ -4,10 +4,18 @@ export const getGeneralChat = (client) => {
   })
 }
 
+export const isBot = (user) => {
+  return parseInt(user.id) === 434765029816926218;
+};
+
 export const isJeuely = (user) => {
   return parseInt(user.id) === 201180011317690369;
 };
 
+export const notJeuelyOrBot = (user) => {
+  const userId = parseInt(user.id);
+  return (userId !== 201180011317690369) && (userId !== 434765029816926218);
+}
 
 export const isBezzaton = (user) => {
   return parseInt(user.id) === 294996871896760321;
@@ -16,12 +24,12 @@ export const isBezzaton = (user) => {
 export const isLoarf = (user) => {
   return parseInt(user.id) === 185957145253117952;
 };
-export const isBot = (user) => {
-  return parseInt(user.id) === 434765029816926218;
-};
+
 
 export const getRandomUser = (channel) => {
-    return channel.members.random(1);
+    return channel.members.filter(function(member){
+      return notJeuelyOrBot(member)
+    }).random(1);
 };
 
 export const logSuccess = (response, channel) => {

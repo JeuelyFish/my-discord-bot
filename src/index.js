@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
 import { sample, startsWith, includes } from 'lodash';
-import { getGeneralChat, isJeuely, isBot, logError, getRandomUser } from './helpers/common.js';
+import { getGeneralChat, isJeuely, notJeuelyOrBot } from './helpers/common.js';
 import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands.js';
 import { complimentMentionedUsers } from './helpers/admin/responses.js';
 import { complimentRandomUser } from './helpers/compliments.js';
@@ -29,11 +29,6 @@ const handleCommand = (message) => {
     const msgContent = message.content;
     const author = message.author;
     const channel = getGeneralChat(client);
-
-    if (!isJeuely(author)) {
-        denyCommand(message);
-        return;
-    }
 
     if (startsWith(message.content, '!purge')) {
         purge(channel, timeOfLastPurge);
@@ -66,15 +61,15 @@ const handleResponse = (message) => {
 // Listen to every message
 client.on('message', message => {
     //message is a command
-    if (startsWith(message.content, '!')) {
+    if (startsWith(message.content, '!') && isJeuely(message.author)) {
         handleCommand(message)
     }
     //message mentions bot
     if (message.isMentioned('434765029816926218')) {
-        if (!isJeuely(message.author)) {
+        if (notJeuelyOrBot(message.author)) {
             giveReply(message);
-        } else {
-            handleResponse(message)
+        } else if (isJeuely(message.author)) {
+            handleResponse(message);
         }
     }
 

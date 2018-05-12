@@ -23,7 +23,6 @@ export const dailyCompliment = (client) => {
   const compliment = new CronJob('0 0 7 * * *', () => {
       setTimeout(function() {
           complimentRandomUser(getGeneralChat(client));
-          console.log("compliment sent");
       }, random(3600000, 43200000));
   });
   return compliment;
