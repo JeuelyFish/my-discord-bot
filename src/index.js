@@ -15,7 +15,7 @@ let timeOfLastPurge = 1525149600000; //time for crons
 client.on('ready', () => {
     // set up crons
     dailyPurge(client, timeOfLastPurge).start();
-    dailyCompliment(client).start()
+    // dailyCompliment(client).start()
     checker().start();
 
     // and say hello
