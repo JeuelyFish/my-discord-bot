@@ -14,7 +14,7 @@ const createSemiRandomTime = (dayInt, monthInt) => {
     const endOf28DayMonth = (monthInt === 1 && dayInt === 28);
 
     if (endOf31DayMonth && monthInt === 11){
-        timeArray.unshift(1, 1)
+        timeArray.unshift(0, 1)
     } else if(endOf30DayMonth || endOf31DayMonth || endOf28DayMonth){
         timeArray.unshift(monthInt + 1)
         timeArray.unshift(1)
@@ -22,7 +22,7 @@ const createSemiRandomTime = (dayInt, monthInt) => {
         timeArray.unshift(monthInt)
         timeArray.unshift(dayInt + 1)
     }
-    timeArray.unshift(random(range(7, 14))); // add hours
+    timeArray.unshift(random(range(8, 14))); // add hours
     timeArray.unshift(random(range(0, 59))); // add minutes
     timeArray.unshift(0); // add seconds
     return timeArray.join(' ');
@@ -31,29 +31,10 @@ const createSemiRandomTime = (dayInt, monthInt) => {
 
 
 export const checker = () => {
-  const checkerCron = new CronJob('* * * * * *',
+  const checkerCron = new CronJob('0 59 * * * *',
   function() {
-    // console.log('ping');
-    const nextRunTime = this.nextDates().toDate();
-    const nextMonth = nextRunTime.getMonth();
-    const nextDay = nextRunTime.getDate();
-
-    console.log('nextRunTime: ', nextRunTime);
-    console.log('nextMonth: ', nextMonth);
-    console.log('nextDay: ', nextDay);
-
-
-
-    // if(this.cronTime.source != '* * * * * *'){
-    //   this.setTime(new CronTime('* * * * * *'));
-    // }
-  },
-  function() {
-    // console.log("JOB ENDED")
-    // this.start();
-  }
-
-  );
+    console.log('ping');
+  });
   return checkerCron;
 }
 
@@ -65,23 +46,24 @@ export const dailyPurge = (client, timeOfLastPurge) => {
 }
 
 export const dailyCompliment = (client) => {
-  // const compliment = new CronJob('0 0 7 * * *', () => {
-  //     setTimeout(function() {
-  //         complimentRandomUser(getGeneralChat(client));
-  //     }, random(3600000, 43200000));
-  // });
   var compliment = new CronJob({
-  cronTime: '0 0 7 * * *',
-  onTick: function() {
-    /*
-     * Runs every weekday (Monday through Friday)
-     * at 11:30:00 AM. It does not run on Saturday
-     * or Sunday.
-     */
-  },
-  start: false,
-  timeZone: 'America/Los_Angeles'
-});
-job.start();
+    cronTime: '0 0 8 * * *',
+    onTick: function() {
+      const nextRunTime = this.nextDates().toDate();
+      const nextMonth = nextRunTime.getMonth();
+      const nextDay = nextRunTime.getDate();
+
+      complimentRandomUser(getGeneralChat(client));
+      const cronTimeString = createSemiRandomTime(nextDay, nextMonth);
+      console.log("new run time at: " + cronTimeString);
+      this.setTime(new CronTime(cronTimeString));
+    },
+    onComplete: function() {
+      console.log(this.source)
+      this.start();
+    },
+    start: false,
+    timeZone: 'America/Los_Angeles'
+  });
   return compliment;
 }

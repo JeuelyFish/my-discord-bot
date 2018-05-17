@@ -10,12 +10,12 @@ import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs.js';
 //
 //
 const client = new Client();
-let timeOfLastPurge = 1525149600000; //time for crons
+let timeOfLastPurge = 1526592764000;
 
 client.on('ready', () => {
     // set up crons
     dailyPurge(client, timeOfLastPurge).start();
-    // dailyCompliment(client).start()
+    dailyCompliment(client).start()
     checker().start();
 
     // and say hello
@@ -53,7 +53,6 @@ const handleResponse = (message) => {
     if (includes(message.content, 'compliment')) {
         complimentMentionedUsers(message, channel);
     }
-
 }
 
 
@@ -72,7 +71,6 @@ client.on('message', message => {
             handleResponse(message);
         }
     }
-
 });
 
 client.login(process.env.BOT_TOKEN);

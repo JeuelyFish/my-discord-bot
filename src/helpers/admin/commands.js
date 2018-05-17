@@ -8,7 +8,7 @@ export const purge = (channel, timeOfLastPurge) => {
       const filteredByDate = messages.filter(msg => msg.createdTimestamp > timeOfLastPurge);
       const filteredByAuthor = filteredByDate.filter(msg => msg.author.username != 'deletor')
       return {
-        promises: filteredByAuthor.deleteAll(),
+        promises: filteredByDate.deleteAll(),
         originalSize: filteredByDate.array().length
       }
     })
