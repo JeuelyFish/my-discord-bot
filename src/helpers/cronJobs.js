@@ -1,5 +1,5 @@
 import { CronJob, CronTime } from 'cron';
-import { random, range, includes, get } from 'lodash';
+import { random, range, includes, get, sample } from 'lodash';
 import { getGeneralChat, getRandomUser } from './common.js';
 import { purge } from './admin/commands.js';
 import { complimentRandomUser } from './compliments.js';
@@ -22,8 +22,8 @@ const createSemiRandomTime = (dayInt, monthInt) => {
         timeArray.unshift(monthInt)
         timeArray.unshift(dayInt + 1)
     }
-    timeArray.unshift(random(range(8, 14))); // add hours
-    timeArray.unshift(random(range(0, 59))); // add minutes
+    timeArray.unshift(random(8, 14)); // add hours
+    timeArray.unshift(random(0, 59)); // add minutes
     timeArray.unshift(0); // add seconds
     return timeArray.join(' ');
 }
