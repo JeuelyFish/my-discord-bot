@@ -55,22 +55,27 @@ export const dailyCompliment = (client) => {
   const now = new Date;
   const currentDay = now.getDate();
   const currentMonth = now.getMonth();
+  console.log("currentDay", currentDay);
+  console.log("currentMonth", currentMonth);
+
   const firstCronTime = createSemiRandomTime(currentDay, currentMonth);
   console.log("FIRST run time at: ", firstCronTime);
 
   var compliment = new CronJob({
     cronTime: firstCronTime,
     onTick: function() {
-      console.log(this.cronTime)
-      console.log('*****************')
-      console.log(this.cronTime.source)
-
-      const nextRunTime = this.nextDates().toDate();
-      const nextMonth = nextRunTime.getMonth();
-      const nextDay = nextRunTime.getDate();
-
+      // first compliment a random user in general chat
       complimentRandomUser(getGeneralChat(client));
-      const cronTimeString = createSemiRandomTime(nextDay, nextMonth, true);
+
+      // then take source time, split it into an array
+      const sourceTimeArray = this.cronTime.source.split(' ');
+      const sourceDay = _.toInteger(sourceTimeArray[3]); // get the day
+      const sourceMonth = _.toInteger(sourceTimeArray[4]); // get the month
+
+      // make a cronString for the next day
+      const cronTimeString = createSemiRandomTime(sourceDay, sourceMonth, true);
+
+      // and set it
       console.log("NEXT run time at: " + cronTimeString);
       this.setTime(new CronTime(cronTimeString));
     },
@@ -80,7 +85,7 @@ export const dailyCompliment = (client) => {
     },
     start: false,
     timeZone: 'America/Los_Angeles',
-    runOnInit: true
+    // runOnInit: true
   });
   return compliment;
 }
