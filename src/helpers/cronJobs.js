@@ -5,7 +5,11 @@ import { purge } from './admin/commands.js';
 import { complimentRandomUser } from './compliments.js';
 
 
-const createSemiRandomTime = (dayInt, monthInt, increment) => {
+const createSemiRandomTime = (anchorDate, increment) => {
+    const monthInt = anchorDate.getMonth();
+    const dayInt = anchorDate.getDate();
+    const hourInt = anchorDate.getHours();
+
     const timeArray = ['*'];
     const monthsWith30Days = [3, 5, 8];
     const monthsWith31Days = [0, 2, 4, 6, 7, 9, 10, 11]
@@ -28,7 +32,8 @@ const createSemiRandomTime = (dayInt, monthInt, increment) => {
       timeArray.unshift(dayInt);
     }
 
-    timeArray.unshift(random(8, 14)); // add hours
+    const semiRandomHour = (hourInt < 18 && hourInt > 8) ? random(hourInt, 19) : random(8, 19);
+    timeArray.unshift(semiRandomHour); // add hours
     timeArray.unshift(random(0, 59)); // add minutes
     timeArray.unshift(0); // add seconds
     return timeArray.join(' ');
@@ -37,7 +42,8 @@ const createSemiRandomTime = (dayInt, monthInt, increment) => {
 
 
 export const checker = () => {
-  const checkerCron = new CronJob('0 59 * * * *',
+  // const checkerCron = new CronJob('0 59 * * * *',
+  const checkerCron = new CronJob('0 0 */3 * * *',
   function() {
     console.log('ping');
   });
@@ -52,13 +58,8 @@ export const dailyPurge = (client, timeOfLastPurge) => {
 }
 
 export const dailyCompliment = (client) => {
-  const now = new Date;
-  const currentDay = now.getDate();
-  const currentMonth = now.getMonth();
-  console.log("currentDay", currentDay);
-  console.log("currentMonth", currentMonth);
-
-  const firstCronTime = createSemiRandomTime(currentDay, currentMonth);
+  const initTime = new Date;
+  const firstCronTime = createSemiRandomTime(initTime);
   console.log("FIRST run time at: ", firstCronTime);
 
   var compliment = new CronJob({
@@ -66,15 +67,9 @@ export const dailyCompliment = (client) => {
     onTick: function() {
       // first compliment a random user in general chat
       complimentRandomUser(getGeneralChat(client));
-
-      // then take source time, split it into an array
-      const sourceTimeArray = this.cronTime.source.split(' ');
-      const sourceDay = _.toInteger(sourceTimeArray[3]); // get the day
-      const sourceMonth = _.toInteger(sourceTimeArray[4]); // get the month
-
       // make a cronString for the next day
-      const cronTimeString = createSemiRandomTime(sourceDay, sourceMonth, true);
-
+      const tickTime = new Date;
+      const cronTimeString = createSemiRandomTime(tickTime, true);
       // and set it
       console.log("NEXT run time at: " + cronTimeString);
       this.setTime(new CronTime(cronTimeString));
@@ -84,7 +79,7 @@ export const dailyCompliment = (client) => {
       this.start();
     },
     start: false,
-    timeZone: 'America/Los_Angeles',
+    // timeZone: 'America/Los_Angeles',
     // runOnInit: true
   });
   return compliment;
