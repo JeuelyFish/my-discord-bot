@@ -6,17 +6,25 @@ import { complimentMentionedUsers } from './helpers/admin/responses.js';
 import { complimentRandomUser } from './helpers/compliments.js';
 import { denyCommand, giveReply } from './helpers/replies.js';
 import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs.js';
+import * as firebase from "firebase";
+import { getFireBaseConfig } from './helpers/fire.js';
 
 //
 //
 const client = new Client();
 let timeOfLastPurge = 1526592764000;
 
+
 client.on('ready', () => {
+    // start fireBase
+    firebase.initializeApp(getFireBaseConfig());
+    setFireBaseComplimentTime(new Date);
+
     // set up crons
     dailyPurge(client, timeOfLastPurge).start();
     dailyCompliment(client).start()
     checker(dailyCompliment).start();
+
 
     // and say hello
     console.log("Hello World!")
