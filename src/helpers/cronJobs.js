@@ -9,7 +9,7 @@ import * as firebase from "firebase";
 export const checker = (targetCron) => {
   var checkerCron = new CronJob({cronTime: '0 59 * * * *',
     onTick: function() {
-        console.log("ping")
+        console.log("ping", targetCron.cronTime.source)
       console.log("status:", targetCron.running)
     },
     start: false,
