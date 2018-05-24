@@ -3,6 +3,7 @@ import { random, range, includes, get, sample } from 'lodash';
 import { getGeneralChat, getRandomUser } from './common.js';
 import { purge } from './admin/commands.js';
 import { complimentRandomUser } from './compliments.js';
+import * as moment from 'moment';
 
 
 const createSemiRandomTime = (anchorDate, increment) => {
@@ -39,23 +40,28 @@ const createSemiRandomTime = (anchorDate, increment) => {
     return timeArray.join(' ');
 }
 
-
-
 export const checker = () => {
-  // const checkerCron = new CronJob('0 59 * * * *',
-  const checkerCron = new CronJob('0 0 */3 * * *',
-  function() {
-    console.log('ping');
+  var checkerCron = new CronJob({cronTime: '0 59 * * * *',
+    onTick: function() {
+      console.log("ping")
+    },
+    start: false,
+    timeZone: 'America/Los_Angeles',
   });
   return checkerCron;
 }
 
 export const dailyPurge = (client, timeOfLastPurge) => {
-  const purgeCron = new CronJob('0 0 7 * * *', () => {
+  var purgeCron = new CronJob({cronTime: '0 0 7 * * *',
+    onTick: function() {
       purge(getGeneralChat(client), timeOfLastPurge)
-  })
+    },
+    start: false,
+    timeZone: 'America/Los_Angeles',
+  });
   return purgeCron;
 }
+
 
 export const dailyCompliment = (client) => {
   const initTime = new Date;
@@ -79,7 +85,7 @@ export const dailyCompliment = (client) => {
       this.start();
     },
     start: false,
-    // timeZone: 'America/Los_Angeles',
+    timeZone: 'America/Los_Angeles',
     // runOnInit: true
   });
   return compliment;
