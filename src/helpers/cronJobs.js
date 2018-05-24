@@ -40,10 +40,10 @@ const createSemiRandomTime = (anchorDate, increment) => {
     return timeArray.join(' ');
 }
 
-export const checker = () => {
+export const checker = (targetCron) => {
   var checkerCron = new CronJob({cronTime: '0 59 * * * *',
     onTick: function() {
-      console.log("ping")
+      console.log("status:", targetCron.running)
     },
     start: false,
     timeZone: 'America/Los_Angeles',

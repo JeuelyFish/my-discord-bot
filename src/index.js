@@ -16,7 +16,7 @@ client.on('ready', () => {
     // set up crons
     dailyPurge(client, timeOfLastPurge).start();
     dailyCompliment(client).start()
-    checker().start();
+    checker(dailyCompliment).start();
 
     // and say hello
     console.log("Hello World!")
