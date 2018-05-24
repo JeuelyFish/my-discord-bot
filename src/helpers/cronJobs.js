@@ -3,13 +3,13 @@ import { random, range, includes, get, sample } from 'lodash';
 import { getGeneralChat, getRandomUser } from './common.js';
 import { purge } from './admin/commands.js';
 import { complimentRandomUser } from './compliments.js';
-import * as moment from 'moment';
+import moment from 'moment'
 
 
 const createSemiRandomTime = (anchorDate, increment) => {
-    const monthInt = anchorDate.getMonth();
-    const dayInt = anchorDate.getDate();
-    const hourInt = anchorDate.getHours();
+    const monthInt = anchorDate.month();
+    const dayInt = anchorDate.date();
+    const hourInt = anchorDate.hours();
 
     const timeArray = ['*'];
     const monthsWith30Days = [3, 5, 8];
@@ -64,7 +64,7 @@ export const dailyPurge = (client, timeOfLastPurge) => {
 
 
 export const dailyCompliment = (client) => {
-  const initTime = new Date;
+  const initTime = moment(new Date, 'PST');
   const firstCronTime = createSemiRandomTime(initTime);
   console.log("FIRST run time at: ", firstCronTime);
 
@@ -74,7 +74,7 @@ export const dailyCompliment = (client) => {
       // first compliment a random user in general chat
       complimentRandomUser(getGeneralChat(client));
       // make a cronString for the next day
-      const tickTime = new Date;
+      const tickTime = moment(new Date, 'PST');
       const cronTimeString = createSemiRandomTime(tickTime, true);
       // and set it
       console.log("NEXT run time at: " + cronTimeString);
