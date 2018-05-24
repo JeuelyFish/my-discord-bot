@@ -10,10 +10,9 @@ const setFireBaseComplimentTime = (runTime) => {
 }
 
 const getFireBaseComplimentTime = () => {
-    return database.ref('nextComplimentTime').once('value').then(
-        function(snapshot) {
-            return (moment(snapshot, 'PST'));
-    });
+    // return a promise
+    const database = firebase.database();
+    return database.ref('nextComplimentTime').once('value');
 }
 
 const getFireBaseConfig = () => {

@@ -40,15 +40,19 @@ export const dailyCompliment = (client) => {
         const currentHour = now.hour();
         // get the compliment hour
         const nextComplimentTime = getFireBaseComplimentTime();
-        const nextComplimentHour = nextComplimentTime.hour();
-        console.log(nextComplimentTime.isValid());
-        // if they are the same
-        if(currentHour == nextComplimentHour) {
-            // compliment a random user
-            complimentRandomUser(getGeneralChat(client));
-            // and set a new compliment time
-            setFireBaseComplimentTime(new Date);
-        }
+        getFireBaseComplimentTime.then(
+            function(complimentTime) {
+                const complimentMoment = moment(complimentTime, 'PST');
+                const complimentHour = nextComplimentTime.hour();
+                console.log(complimentMoment.isValid());
+                // if they are the same
+                if(currentHour == nextComplimentHour) {
+                    // compliment a random user
+                    complimentRandomUser(getGeneralChat(client));
+                    // and set a new compliment time
+                    setFireBaseComplimentTime(new Date);
+                }
+        });
     },
     onComplete: function() {
       console.log("JOB HAS ENDED") // this should never happen,
