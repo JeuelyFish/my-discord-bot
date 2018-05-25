@@ -5,11 +5,14 @@ import * as firebase from "firebase";
 export const setFireBaseComplimentTime = (runTime, addDay) => {
     const database = firebase.database();
     const momentObj = (moment(runTime, 'PST'));
-    const nextDay = momentObj.clone().add( addDay ? 1 : 0, 'day').startOf('day');
-    const addHours = nextDay.clone().add(random(8, 15), 'hours');
-    const utcTime = addHours.toDate().getTime();
-    console.log("setting this UTC Time: ", utcTime);
-    database.ref('nextComplimentTime').set(utcTime);
+    const nextUtcTime = momentObj.clone()
+      .add( addDay ? 1 : 0, 'day')
+      .startOf('day')
+      .add(random(8, 15), 'hours')
+      .toDate()
+      .getTime();
+    console.log("setting this UTC Time: ", nextUtcTime);
+    database.ref('nextComplimentTime').set(nextUtcTime);
 }
 
 export const getFireBaseComplimentTime = () => {
