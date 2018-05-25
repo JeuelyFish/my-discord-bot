@@ -43,7 +43,9 @@ export const dailyCompliment = (client) => {
         getFireBaseComplimentTime().then(
             function(complimentTime) {
                 console.log("I got this:", complimentTime)
-                const complimentMoment = moment(complimentTime, 'PST');
+                const timeValue = complimentTime.val();
+                console.log("which has this value: ", timeValue)
+                const complimentMoment = moment(timeValue, 'PST');
                 const complimentHour = nextComplimentTime.hour();
                 console.log(complimentMoment.isValid());
                 // if they are the same
