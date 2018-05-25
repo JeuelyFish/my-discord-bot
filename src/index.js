@@ -18,15 +18,18 @@ let timeOfLastPurge = 1526592764000;
 client.on('ready', () => {
     // start fireBase
     firebase.initializeApp(getFireBaseConfig());
-    console.log((new Date).getTime())
+    console.log("Init Time: ", (new Date).getTime())
     setFireBaseComplimentTime(new Date);
 
     // set up crons
-    dailyPurge(client, timeOfLastPurge).start();
-    dailyCompliment(client).start()
-    checker(dailyCompliment).start();
+    const purgeCron = dailyPurge(client, timeOfLastPurge);
+    const complimentCron = dailyCompliment(client);
+    const checkerCron = checker(dailyCompliment);
+    purgeCron.start();
+    complimentCron.start();
+    checkerCron.start();
 
-
+    console.log(purgeCron.running, complimentCron.running, checkerCron.running);
     // and say hello
     console.log("Hello World!")
 });

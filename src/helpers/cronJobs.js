@@ -7,11 +7,10 @@ import moment from 'moment';
 import * as firebase from "firebase";
 import {getFireBaseComplimentTime, setFireBaseComplimentTime} from './fire.js'
 
-export const checker = (targetCron) => {
+export const checker = () => {
   var checkerCron = new CronJob({cronTime: '0 59 * * * *',
     onTick: function() {
-        console.log("ping", targetCron.cronTime.source)
-      console.log("status:", targetCron.running)
+      console.log("ping", new Date)
     },
     start: false,
     timeZone: 'America/Los_Angeles',
@@ -41,7 +40,7 @@ export const dailyCompliment = (client) => {
         const currentHour = now.hour();
         // get the compliment hour
         const nextComplimentTime = getFireBaseComplimentTime();
-        getFireBaseComplimentTime.then(
+        getFireBaseComplimentTime().then(
             function(complimentTime) {
                 console.log("I got this:", complimentTime)
                 const complimentMoment = moment(complimentTime, 'PST');
