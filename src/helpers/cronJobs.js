@@ -5,6 +5,7 @@ import { purge } from './admin/commands.js';
 import { complimentRandomUser } from './compliments.js';
 import moment from 'moment';
 import * as firebase from "firebase";
+import {getFireBaseComplimentTime, setFireBaseComplimentTime} from './fire.js'
 
 export const checker = (targetCron) => {
   var checkerCron = new CronJob({cronTime: '0 59 * * * *',
