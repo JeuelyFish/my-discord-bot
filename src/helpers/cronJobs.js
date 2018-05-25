@@ -51,7 +51,7 @@ export const dailyCompliment = (client) => {
                     // compliment a random user
                     complimentRandomUser(getGeneralChat(client));
                     // and set a new compliment time
-                    setFireBaseComplimentTime(new Date);
+                    setFireBaseComplimentTime(new Date, true);
                 }
         });
     },
