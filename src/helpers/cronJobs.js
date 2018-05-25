@@ -38,18 +38,19 @@ export const dailyCompliment = (client) => {
          // get the current hour
         const now = moment(new Date, 'PST');
         const currentHour = now.hour();
+        console.log("nowMoment is valid:", now.isValid());
         // get the compliment hour
-        const nextComplimentTime = getFireBaseComplimentTime();
         getFireBaseComplimentTime().then(
             function(complimentTime) {
-                console.log("I got this:", complimentTime)
                 const timeValue = complimentTime.val();
-                console.log("which has this value: ", timeValue)
+                console.log("timeValue: ", timeValue)
                 const complimentMoment = moment(timeValue, 'PST');
-                const complimentHour = nextComplimentTime.hour();
-                console.log(complimentMoment.isValid());
+                const complimentHour = complimentMoment.hour();
+                console.log("complimentMoment is valid:", complimentMoment.isValid());
+
+                console.log("I compare", currentHour, complimentHour)
                 // if they are the same
-                if(currentHour == nextComplimentHour) {
+                if(currentHour == complimentHour) {
                     // compliment a random user
                     complimentRandomUser(getGeneralChat(client));
                     // and set a new compliment time
