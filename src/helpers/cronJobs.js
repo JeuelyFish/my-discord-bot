@@ -44,7 +44,7 @@ export const dailyCompliment = (client) => {
             function(complimentTime) {
                 const timeValue = complimentTime.val();
                 console.log("timeValue: ", timeValue)
-                const complimentMoment = moment(timeValue, 'PST');
+                const complimentMoment = moment(new Date(timeValue), 'PST');
                 const complimentHour = complimentMoment.hour();
                 console.log("complimentMoment is valid:", complimentMoment.isValid());
 
