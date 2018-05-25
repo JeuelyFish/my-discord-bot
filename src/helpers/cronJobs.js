@@ -43,6 +43,7 @@ export const dailyCompliment = (client) => {
         const nextComplimentTime = getFireBaseComplimentTime();
         getFireBaseComplimentTime.then(
             function(complimentTime) {
+                console.log("I got this:", complimentTime)
                 const complimentMoment = moment(complimentTime, 'PST');
                 const complimentHour = nextComplimentTime.hour();
                 console.log(complimentMoment.isValid());

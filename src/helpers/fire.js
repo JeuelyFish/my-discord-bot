@@ -15,7 +15,7 @@ export const getFireBaseComplimentTime = () => {
     // return a promise
     const database = firebase.database();
     const promiseValue = new Promise(function(resolve, reject) {
-      resolve database.ref('nextComplimentTime').once('value')
+      resolve (database.ref('nextComplimentTime').once('value'));
     });
     return promiseValue;
 }
