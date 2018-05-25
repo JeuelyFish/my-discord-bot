@@ -7,7 +7,7 @@ import { complimentRandomUser } from './helpers/compliments.js';
 import { denyCommand, giveReply } from './helpers/replies.js';
 import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs.js';
 import * as firebase from "firebase";
-import { getFireBaseConfig } from './helpers/fire.js';
+import { getFireBaseConfig, setFireBaseComplimentTime } from './helpers/fire.js';
 
 //
 //
