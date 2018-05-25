@@ -38,17 +38,12 @@ export const dailyCompliment = (client) => {
          // get the current hour
         const now = moment(new Date, 'PST');
         const currentHour = now.hour();
-        console.log("nowMoment is valid:", now.isValid());
         // get the compliment hour
         getFireBaseComplimentTime().then(
             function(complimentTime) {
                 const timeValue = complimentTime.val();
-                console.log("timeValue: ", timeValue)
                 const complimentMoment = moment(new Date(timeValue), 'PST');
                 const complimentHour = complimentMoment.hour();
-                console.log("complimentMoment is valid:", complimentMoment.isValid());
-
-                console.log("I compare", currentHour, complimentHour)
                 // if they are the same
                 if(currentHour == complimentHour) {
                     // compliment a random user
