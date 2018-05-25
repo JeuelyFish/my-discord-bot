@@ -18,6 +18,7 @@ let timeOfLastPurge = 1526592764000;
 client.on('ready', () => {
     // start fireBase
     firebase.initializeApp(getFireBaseConfig());
+    console.log((new Date).getTime())
     setFireBaseComplimentTime(new Date);
 
     // set up crons
