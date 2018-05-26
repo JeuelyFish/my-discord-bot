@@ -19,7 +19,7 @@ client.on('ready', () => {
     // start fireBase
     firebase.initializeApp(getFireBaseConfig());
     console.log("Init Time: ", (new Date).getTime())
-    setFireBaseComplimentTime(new Date, true);
+    // setFireBaseComplimentTime(new Date, true);
 
     // set up crons
     const purgeCron = dailyPurge(client, timeOfLastPurge);
