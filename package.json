@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d dist",
     "postinstall": "babel src -d dist",
-    "run-build": "npm run build && node dist/index.js"
+    "run-build": "npm run build && node dist/index.js",
+    "eslint": "./node_modules/.bin/eslint src; exit 0",
+    "eslint-fix": "./node_modules/.bin/eslint src --fix; exit 0"
+
   },
   "keywords": [],
   "author": "",
@@ -22,6 +25,9 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0"
   }
 }
