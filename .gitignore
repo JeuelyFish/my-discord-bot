@@ -1,3 +1,4 @@
 SECRET.md
+node_modules
 dist/*
 !dist/.gitkeep
