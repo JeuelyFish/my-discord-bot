@@ -11,7 +11,7 @@ export const checker = () => {
   const checkerCron = new CronJob({
     cronTime: '0 59 * * * *',
     onTick() {
-      console.log('ping', new Date());
+      console.log('ping', (new Date()).getTime());
     },
     start: false,
     timeZone: 'America/Los_Angeles',
@@ -49,7 +49,7 @@ export const dailyCompliment = (client) => {
           // compliment a random user
           complimentRandomUser(getGeneralChat(client));
           // and set a new compliment time
-          setFireBaseComplimentTime(new Date(), true);
+          setFireBaseComplimentTime(new Date());
         }
       });
     },

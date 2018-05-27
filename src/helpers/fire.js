@@ -2,15 +2,14 @@ import moment from 'moment';
 import { random } from 'lodash';
 import * as firebase from 'firebase';
 
-export const setFireBaseComplimentTime = (runTime, addDay) => {
+export const setFireBaseComplimentTime = (runTime) => {
   const database = firebase.database();
   const momentObj = (moment(runTime, 'PST'));
   const nextUtcTime = momentObj.clone()
-    .add(addDay ? 1 : 0, 'day')
+    .add(1, 'day')
     .startOf('day')
     .add(random(8, 15), 'hours')
-    .toDate()
-    .getTime();
+    .valueOf();
   console.log('setting this UTC Time: ', nextUtcTime);
   database.ref('nextComplimentTime').set(nextUtcTime);
 };

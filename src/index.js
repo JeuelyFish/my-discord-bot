@@ -1,12 +1,12 @@
 import { Client } from 'discord.js';
 import { sample, startsWith, includes } from 'lodash';
+import * as firebase from 'firebase';
 import { getGeneralChat, isJeuely, notJeuelyOrBot } from './helpers/common.js';
 import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands.js';
 import { complimentMentionedUsers } from './helpers/admin/responses.js';
 import { complimentRandomUser } from './helpers/compliments.js';
 import { denyCommand, giveReply } from './helpers/replies.js';
 import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs.js';
-import * as firebase from 'firebase';
 import { getFireBaseConfig, setFireBaseComplimentTime } from './helpers/fire.js';
 
 //
@@ -19,7 +19,7 @@ client.on('ready', () => {
   // start fireBase
   firebase.initializeApp(getFireBaseConfig());
   console.log('Init Time: ', (new Date()).getTime());
-  // setFireBaseComplimentTime(new Date, true);
+  // setFireBaseComplimentTime(new Date());
 
   // set up crons
   const purgeCron = dailyPurge(client, timeOfLastPurge);
