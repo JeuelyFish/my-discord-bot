@@ -36,16 +36,19 @@ export const dailyCompliment = (client) => {
   const compliment = new CronJob({
     cronTime: '0 0 * * * *', // every hour
     onTick() {
-      // get the current hour
+      // get the current hour & date
       const now = moment(new Date(), 'PST');
       const currentHour = now.hour();
-      // get the compliment hour
+      const currentDate = now.date();
+
+      // get the compliment hour & date
       getFireBaseComplimentTime().then((complimentTime) => {
         const timeValue = complimentTime.val();
         const complimentMoment = moment(new Date(timeValue), 'PST');
         const complimentHour = complimentMoment.hour();
+        const complimentDate = complimentMoment.date();
         // if they are the same
-        if (currentHour == complimentHour) {
+        if ((currentHour == complimentHour) && (currentDate == complimentDate)) {
           // compliment a random user
           complimentRandomUser(getGeneralChat(client));
           // and set a new compliment time
