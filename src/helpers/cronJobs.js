@@ -18,11 +18,11 @@ export const checker = () => {
   return checkerCron;
 };
 
-export const dailyPurge = (client, timeOfLastPurge) => {
+export const dailyPurge = (client) => {
   const purgeCron = new CronJob({
     cronTime: '0 0 7 * * *',
     onTick() {
-      purge(getGeneralChat(client), timeOfLastPurge);
+      purge(getGeneralChat(client), true);
     },
     start: false,
     timeZone: 'America/Los_Angeles',

@@ -10,7 +10,6 @@
     "run-build": "npm run build && node dist/index.js",
     "eslint": "./node_modules/.bin/eslint src; exit 0",
     "eslint-fix": "./node_modules/.bin/eslint src --fix; exit 0"
-
   },
   "keywords": [],
   "author": "",

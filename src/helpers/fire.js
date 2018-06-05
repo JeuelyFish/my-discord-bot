@@ -2,6 +2,20 @@ import moment from 'moment';
 import { random } from 'lodash';
 import * as firebase from 'firebase';
 
+//
+// Purge Time
+export const setFireBasePurgeTime = (runTime) => {
+  const database = firebase.database();
+  database.ref('purgeTime').set(runTime.getTime());
+};
+
+export const getFireBasePurgeTime = () => {
+  const database = firebase.database();
+  return database.ref('purgeTime').once('value');
+};
+
+//
+// Compliment Time
 export const setFireBaseComplimentTime = (runTime) => {
   const database = firebase.database();
   const momentObj = (moment(runTime, 'PST'));
@@ -18,6 +32,8 @@ export const getFireBaseComplimentTime = () => {
   return database.ref('nextComplimentTime').once('value');
 };
 
+//
+//  Config
 export const getFireBaseConfig = () => ({
   apiKey: process.env.FIREBASE_APIKEY,
   authDomain: process.env.FIREBASE_AUTHDOMAIN,

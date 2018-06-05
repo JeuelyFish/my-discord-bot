@@ -1,24 +1,27 @@
 import { parseInt } from 'lodash';
 import { logError } from '../common';
+import { setFireBasePurgeTime, getFireBasePurgeTime } from '../fire';
 
-export const purge = (channel, timeOfLastPurge) => {
-  channel.fetchMessages({
-    limit: 100,
-  })
-    .then((messages) => {
-      const filteredByDate = messages.filter(msg => msg.createdTimestamp > timeOfLastPurge);
+export const purge = (channel, setNewPurgeTime) => {
+  Promise.all(
+    getFireBasePurgeTime(),
+    channel.fetchMessages({ limit: 100 }),
+  )
+    .then(([timeOfLastPurge, messages]) => {
+      const purgeUtc = parseInt(timeOfLastPurge);
+      const filteredByDate = messages.filter(msg => msg.createdTimestamp > purgeUtc);
       return {
         promises: filteredByDate.deleteAll(),
-        originalSize: filteredByDate.array().length,
+        dateString: (new Date(purgeUtc)).toDateString(),
       };
     })
-    .then(obj => Promise.all(obj.promises).then((values) => {
-      const dateObj = new Date(timeOfLastPurge);
-      const dateString = dateObj.toDateString();
-      return `Collected ${obj.originalSize} messages since ${dateString} and then deleted ${values.length} of them.`;
+    .then(obj => Promise.all(obj.promises).then((purged) => {
+      console.info(`deleted ${purged.length} messages since ${obj.dateString}`);
+      channel.send(`deleted ${purged.length} messages since ${obj.dateString}`);
+      if (setNewPurgeTime) {
+        setFireBasePurgeTime((new Date()).getTime());
+      }
     }))
-    .then(msgString => channel.send(msgString))
-    .then(msg => console.info(`Sent msg: ${msg.content}`))
     .catch(err => logError(err, channel));
 };
 

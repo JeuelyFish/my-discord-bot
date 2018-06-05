@@ -11,8 +11,6 @@ import { getFireBaseConfig } from './helpers/fire';
 //
 //
 const client = new Client();
-const timeOfLastPurge = 1526592764000;
-
 
 client.on('ready', () => {
   // start fireBase
@@ -20,7 +18,7 @@ client.on('ready', () => {
   console.info('Init Time: ', (new Date()).getTime());
 
   // set up crons
-  const purgeCron = dailyPurge(client, timeOfLastPurge);
+  const purgeCron = dailyPurge(client);
   const complimentCron = dailyCompliment(client);
   const checkerCron = checker(dailyCompliment);
   purgeCron.start();
@@ -39,7 +37,7 @@ const handleCommand = (message) => {
   const channel = getGeneralChat(client);
 
   if (startsWith(message.content, '!purge')) {
-    purge(channel, timeOfLastPurge);
+    purge(channel);
   }
 
   if (startsWith(message.content, '!delete')) {
