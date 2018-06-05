@@ -1,0 +1,7 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "no-console": [1, { "allow": ["warn", "info", "error"] }],
+    "import/prefer-default-export": 0
+  }
+}

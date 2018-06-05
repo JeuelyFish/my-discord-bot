@@ -1,46 +1,48 @@
 import { Client } from 'discord.js';
-import { getGeneralChat, isJeuely, isBot, logError } from './helpers/common.js';
-import { bulkDelete, defaultDelete, purge } from './helpers/commands.js';
-import { makeChecker, makeDaily } from './helpers/cronJobs.js';
+import { startsWith, includes } from 'lodash';
+import * as firebase from 'firebase';
+import { getGeneralChat, isJeuely, notJeuelyOrBot } from './helpers/common';
+import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands';
+import { complimentMentionedUsers } from './helpers/admin/responses';
+import { giveReply } from './helpers/replies';
+import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs';
+import { getFireBaseConfig } from './helpers/fire';
 
 //
 //
 const client = new Client();
-let timeOfLastPurge = 1525149600000; //time for crons
+const timeOfLastPurge = 1526592764000;
+
 
 client.on('ready', () => {
-  // set up crons
-  const purgeAndUpdateTime = () => {
-    purge(getGeneralChat(client), timeOfLastPurge);
-    timeOfLastPurge = new Date().getTime();
-  }
-  const daily = makeDaily(purgeAndUpdateTime);
-  const checker = makeChecker();
-  daily.start();
-  checker.start();
+  // start fireBase
+  firebase.initializeApp(getFireBaseConfig());
+  console.info('Init Time: ', (new Date()).getTime());
 
-  // and say hello
-  console.log("Hello World!")
+  // set up crons
+  const purgeCron = dailyPurge(client, timeOfLastPurge);
+  const complimentCron = dailyCompliment(client);
+  const checkerCron = checker(dailyCompliment);
+  purgeCron.start();
+  complimentCron.start();
+  checkerCron.start();
+
+  // log all running crons
+  console.info(purgeCron.running, complimentCron.running, checkerCron.running);
 });
 
 
 //
-//
+// Do something with a command
 const handleCommand = (message) => {
   const msgContent = message.content;
-  const author = message.author;
   const channel = getGeneralChat(client);
 
-  if (!isJeuely(author.id)) {
-    message.reply('I love you');
-    return;
-  }
-
-  if (msgContent.indexOf('!purge') === 0) {
+  if (startsWith(message.content, '!purge')) {
     purge(channel, timeOfLastPurge);
   }
 
-  if (msgContent.indexOf('!delete') === 0) {
+  if (startsWith(message.content, '!delete')) {
     const splitMsg = msgContent.split(' ');
     if (splitMsg.length === 1) {
       defaultDelete(channel);
@@ -48,16 +50,33 @@ const handleCommand = (message) => {
       bulkDelete(channel, splitMsg);
     }
   }
-}
+};
 
 //
-//
-client.on('message', message => {
-  if (message.content.indexOf('!') === 0) {
-    handleCommand(message)
+// Respond in some way to a user
+const handleResponse = (message) => {
+  const channel = getGeneralChat(client);
+
+  if (includes(message.content, 'compliment')) {
+    complimentMentionedUsers(message, channel);
   }
-  if (message.isMentioned('434765029816926218') && !isJeuely(message.author.id)) {
-    message.reply(`You are an amazing person and I'm glad to know you!`);
+};
+
+
+//
+// Listen to every message
+client.on('message', (message) => {
+  // message is a command
+  if (startsWith(message.content, '!') && isJeuely(message.author)) {
+    handleCommand(message);
+  }
+  // message mentions bot
+  if (message.isMentioned('434765029816926218')) {
+    if (notJeuelyOrBot(message.author)) {
+      giveReply(message);
+    } else if (isJeuely(message.author)) {
+      handleResponse(message);
+    }
   }
 });
 
