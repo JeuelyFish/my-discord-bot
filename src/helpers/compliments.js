@@ -1,5 +1,5 @@
 import { sample } from 'lodash';
-import { getRandomUser } from './common.js';
+import { getRandomUser } from './common';
 
 
 const compliments = [
@@ -98,4 +98,7 @@ export const complimentUser = (user, channel, includeGreeting) => {
   channel.send(`${includeGreeting ? greeting : ''} ${user}. ${compliment}`);
 };
 
-export const complimentRandomUser = channel => complimentUser(getRandomUser(channel), channel, true);
+export const complimentRandomUser = (channel) => {
+  const randomUser = getRandomUser(channel);
+  complimentUser(randomUser, channel, true);
+};

@@ -1,4 +1,5 @@
-import { logError } from '../common.js';
+import { parseInt } from 'lodash';
+import { logError } from '../common';
 
 export const purge = (channel, timeOfLastPurge) => {
   channel.fetchMessages({
@@ -6,7 +7,6 @@ export const purge = (channel, timeOfLastPurge) => {
   })
     .then((messages) => {
       const filteredByDate = messages.filter(msg => msg.createdTimestamp > timeOfLastPurge);
-      const filteredByAuthor = filteredByDate.filter(msg => msg.author.username != 'deletor');
       return {
         promises: filteredByDate.deleteAll(),
         originalSize: filteredByDate.array().length,
@@ -26,16 +26,10 @@ export const defaultDelete = (channel) => {
   channel.fetchMessages({
     limit: 5,
   })
-    .then((messages) => {
-      const filtered = messages.filter(msg => msg.author.username != 'deletor');
-      return {
-        promises: filtered.deleteAll(),
-        originalSize: filtered.array().length,
-      };
-    })
-    .then(obj => Promise.all(obj.promises).then((values) => {
-      console.info(`default delete successfull: ${obj.originalSize} deleted`);
-      channel.send(`I deleted ${obj.originalSize} messages.`);
+    .then(messages => messages.deleteAll())
+    .then(promiseArray => Promise.all(promiseArray).then((values) => {
+      console.info(`deleted ${values.length} messages`);
+      channel.send(`deleted ${values.length} messages`);
     }))
     .catch(err => logError(err, channel));
 };

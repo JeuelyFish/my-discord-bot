@@ -1,17 +1,16 @@
-import { CronJob, CronTime } from 'cron';
-import { random, range, includes, get, sample } from 'lodash';
-import { getGeneralChat, getRandomUser } from './common.js';
-import { purge } from './admin/commands.js';
-import { complimentRandomUser } from './compliments.js';
+import { CronJob } from 'cron';
+import { isEqual } from 'lodash';
 import moment from 'moment';
-import * as firebase from 'firebase';
-import { getFireBaseComplimentTime, setFireBaseComplimentTime } from './fire.js';
+import { getGeneralChat } from './common';
+import { purge } from './admin/commands';
+import { complimentRandomUser } from './compliments';
+import { getFireBaseComplimentTime, setFireBaseComplimentTime } from './fire';
 
 export const checker = () => {
   const checkerCron = new CronJob({
     cronTime: '0 59 * * * *',
     onTick() {
-      console.log('ping', (new Date()).getTime());
+      console.info('ping', (new Date()).getTime());
     },
     start: false,
     timeZone: 'America/Los_Angeles',
@@ -48,7 +47,7 @@ export const dailyCompliment = (client) => {
         const complimentHour = complimentMoment.hour();
         const complimentDate = complimentMoment.date();
         // if they are the same
-        if ((currentHour == complimentHour) && (currentDate == complimentDate)) {
+        if (isEqual(currentHour, complimentHour) && isEqual(currentDate, complimentDate)) {
           // compliment a random user
           complimentRandomUser(getGeneralChat(client));
           // and set a new compliment time
@@ -57,7 +56,7 @@ export const dailyCompliment = (client) => {
       });
     },
     onComplete() {
-      console.log('JOB HAS ENDED'); // this should never happen,
+      console.warn('JOB HAS ENDED'); // this should never happen,
       this.start(); //  but heroku can be broke-ku
     },
     start: false,

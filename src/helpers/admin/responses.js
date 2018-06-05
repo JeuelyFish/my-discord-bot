@@ -1,6 +1,6 @@
 import { forEach } from 'lodash';
-import { getGeneralChat, notJeuelyOrBot } from '../common.js';
-import { complimentUser } from '../compliments.js';
+import { notJeuelyOrBot } from '../common';
+import { complimentUser } from '../compliments';
 
 
 export const complimentMentionedUsers = (message, channel) => {

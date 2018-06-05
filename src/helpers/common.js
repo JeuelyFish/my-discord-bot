@@ -1,3 +1,5 @@
+import { parseInt } from 'lodash';
+
 export const getGeneralChat = client => client.channels.find(item => item.type === 'text' && item.name === 'general');
 
 export const isBot = user => parseInt(user.id) === 434765029816926218;
@@ -14,7 +16,8 @@ export const isBezzaton = user => parseInt(user.id) === 294996871896760321;
 export const isLoarf = user => parseInt(user.id) === 185957145253117952;
 
 
-export const getRandomUser = channel => channel.members.filter(member => notJeuelyOrBot(member)).random(1);
+export const getRandomUser = channel => channel.members
+  .filter(member => notJeuelyOrBot(member)).random(1);
 
 export const logSuccess = (response, channel) => {
   console.info(response);

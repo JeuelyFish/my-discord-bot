@@ -10,7 +10,6 @@ export const setFireBaseComplimentTime = (runTime) => {
     .startOf('day')
     .add(random(8, 15), 'hours')
     .valueOf();
-  console.log('setting this UTC Time: ', nextUtcTime);
   database.ref('nextComplimentTime').set(nextUtcTime);
 };
 

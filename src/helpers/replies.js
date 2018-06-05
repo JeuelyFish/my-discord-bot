@@ -1,9 +1,9 @@
 import { sample } from 'lodash';
-import { logError, isLoarf, isBezzaton } from './common.js';
+import { logError, isLoarf, isBezzaton } from './common';
 
 const smileEmojis = [
   '😀', '😁', '😂', '🤣', '😃', '😄', '😆', '😉', '😊', '😋', '😎', '😍',
-  '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩', '😏', '😛', '😜', '😝', '🦈',
+  '😘', '😗', '😙', '😚', '🙂', '🤗', '😏', '😛', '😜', '😝', '🦈',
 ];
 
 export const denyCommand = (message) => {
