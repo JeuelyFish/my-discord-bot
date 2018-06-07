@@ -3,12 +3,13 @@ import { logError } from '../common';
 import { setFireBasePurgeTime, getFireBasePurgeTime } from '../fire';
 
 export const purge = (channel, setNewPurgeTime) => {
-  Promise.all(
-    getFireBasePurgeTime(),
-    channel.fetchMessages({ limit: 100 }),
-  )
+  Promise.all([getFireBasePurgeTime(),
+      channel.fetchMessages({
+        limit: 100
+      })
+    ])
     .then(([timeOfLastPurge, messages]) => {
-      const purgeUtc = parseInt(timeOfLastPurge);
+      const purgeUtc = parseInt(timeOfLastPurge.val());
       const filteredByDate = messages.filter(msg => msg.createdTimestamp > purgeUtc);
       return {
         promises: filteredByDate.deleteAll(),
@@ -16,10 +17,10 @@ export const purge = (channel, setNewPurgeTime) => {
       };
     })
     .then(obj => Promise.all(obj.promises).then((purged) => {
-      console.info(`deleted ${purged.length} messages since ${obj.dateString}`);
-      channel.send(`deleted ${purged.length} messages since ${obj.dateString}`);
+      console.info(`deleted ${purged.length} messages created since ${obj.dateString}`);
+      channel.send(`deleted ${purged.length} messages created since ${obj.dateString}`);
       if (setNewPurgeTime) {
-        setFireBasePurgeTime((new Date()).getTime());
+        setFireBasePurgeTime(new Date());
       }
     }))
     .catch(err => logError(err, channel));
