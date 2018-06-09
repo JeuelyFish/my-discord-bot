@@ -3,8 +3,8 @@ import { startsWith, includes } from 'lodash';
 import * as firebase from 'firebase';
 import { getGeneralChat, isJeuely, notJeuelyOrBot } from './helpers/common';
 import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands';
-import { complimentMentionedUsers } from './helpers/admin/responses';
-import { giveReply } from './helpers/replies';
+import { complimentMentionedUsers } from './helpers/compliments';
+import { giveSmilieReply, giveMuteReply } from './helpers/replies';
 import { checker, dailyPurge, dailyCompliment } from './helpers/cronJobs';
 import { getFireBaseConfig } from './helpers/fire';
 
@@ -34,7 +34,13 @@ client.on('ready', () => {
 // Do something with a command
 const handleCommand = (message) => {
   const msgContent = message.content;
+  const msgAuthor = message.author;
   const channel = getGeneralChat(client);
+
+  if(!isJeuely(msgAuthor)) {
+      denyCommand(message);
+      return;
+  }
 
   if (startsWith(message.content, '!purge')) {
     purge(channel);
@@ -53,29 +59,41 @@ const handleCommand = (message) => {
 //
 // Respond in some way to a user
 const handleResponse = (message) => {
-  const channel = getGeneralChat(client);
+    const channel = getGeneralChat(client);
 
-  if (includes(message.content, 'compliment')) {
-    complimentMentionedUsers(message, channel);
-  }
+    if (includes(message.content, 'compliment')) {
+        complimentMentionedUsers(message, channel);
+    } else {
+        giveSmilieReply(message);
+    }
 };
+
+const handleDirectMessage = (message) => {
+    if (includes(message.content, 'remind') &&
+        includes(message.content, 'in') &&
+        includes(message.content, 'to') ) {
+            const action = 'myAction';
+            const reminderTime = 'reminderTime';
+
+            message.reply(`Ok, I will remind you to ${action} in about ${action}`);
+
+
+    } else {
+        giveMuteReply(message);
+    }
+}
 
 
 //
 // Listen to every message
 client.on('message', (message) => {
-  // message is a command
-  if (startsWith(message.content, '!') && isJeuely(message.author)) {
-    handleCommand(message);
-  }
-  // message mentions bot
-  if (message.isMentioned('434765029816926218')) {
-    if (notJeuelyOrBot(message.author)) {
-      giveReply(message);
-    } else if (isJeuely(message.author)) {
-      handleResponse(message);
+    if (message.channel.type === 'dm') { // message is a private DM message
+        handleDirectMessage(message);
+    } else if (startsWith(message.content, '!')) { // message is a command
+        handleCommand(message);
+    } else if (message.isMentioned('434765029816926218')) { // message mentions bot (is not DM or command)
+        handleResponse(message);
     }
-  }
 });
 
 client.login(process.env.BOT_TOKEN);

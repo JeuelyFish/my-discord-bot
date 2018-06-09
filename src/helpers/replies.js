@@ -6,6 +6,8 @@ const smileEmojis = [
   '😘', '😗', '😙', '😚', '🙂', '🤗', '😏', '😛', '😜', '😝', '🦈',
 ];
 
+const muteEmojis = ['🤫', '😶', '😴', '😪'];
+
 export const denyCommand = (message) => {
   const user = message.author;
   if (isBezzaton(user)) {
@@ -20,6 +22,10 @@ export const denyCommand = (message) => {
   }
 };
 
-export const giveReply = (message) => {
+export const giveSmilieReply = (message) => {
   message.reply(sample(smileEmojis));
 };
+
+export const giveMuteReply = (message) => {
+    message.reply(sample(muteEmojis))
+}

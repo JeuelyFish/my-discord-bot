@@ -1,5 +1,5 @@
-import { sample } from 'lodash';
-import { getRandomUser } from './common';
+import { sample, forEach } from 'lodash';
+import { getRandomUser, notJeuelyOrBot } from './common';
 
 
 const compliments = [
@@ -101,4 +101,11 @@ export const complimentUser = (user, channel, includeGreeting) => {
 export const complimentRandomUser = (channel) => {
   const randomUser = getRandomUser(channel);
   complimentUser(randomUser, channel, true);
+};
+
+export const complimentMentionedUsers = (message, channel) => {
+  const mentionedUsers = message.mentions.users.filter(user => notJeuelyOrBot(user)).array();
+  forEach(mentionedUsers, (user) => {
+    complimentUser(user, channel);
+  });
 };
