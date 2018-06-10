@@ -6,7 +6,8 @@ import * as firebase from 'firebase';
 // Purge Time
 export const setFireBasePurgeTime = (runTime) => {
   const database = firebase.database();
-  database.ref('purgeTime').set(runTime.getTime());
+  const purgeUtcTime = moment(runTime, 'PST').subtract(1 , 'hour').valueOf();
+  database.ref('purgeTime').set(purgeUtcTime);
 };
 
 export const getFireBasePurgeTime = () => {
