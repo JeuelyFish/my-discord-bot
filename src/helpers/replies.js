@@ -6,7 +6,7 @@ const smileEmojis = [
   '😘', '😗', '😙', '😚', '🙂', '🤗', '😏', '😛', '😜', '😝', '🦈',
 ];
 
-const muteEmojis = ['🤫', '😶', '😴', '😪'];
+const muteEmojis = ['💤', '😶', '😴', '😪', '🤐', '🦈',];
 
 export const denyCommand = (message) => {
   const user = message.author;

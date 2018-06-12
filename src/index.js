@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
-import { startsWith, includes } from 'lodash';
+import { startsWith, includes, sortBy, reverse, forEach, isEqual, find } from 'lodash';
 import * as firebase from 'firebase';
-import { getGeneralChat, isJeuely, notJeuelyOrBot } from './helpers/common';
+import { getGeneralChat, isJeuely, isBot, notJeuelyOrBot } from './helpers/common';
 import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands';
 import { complimentMentionedUsers } from './helpers/compliments';
 import { giveSmilieReply, giveMuteReply } from './helpers/replies';
@@ -67,26 +67,58 @@ const handleResponse = (message) => {
         giveSmilieReply(message);
     }
 };
-
 const handleDirectMessage = (message) => {
-    if (includes(message.content, 'remind') &&
-        includes(message.content, 'in') &&
-        includes(message.content, 'to') ) {
-            const action = 'myAction';
-            const reminderTime = 'reminderTime';
+  if (includes(message.content, 'remind ') &&
+    includes(message.content, 'in ') &&
+    includes(message.content, 'to ')) {
+    let originalMsgTxt = message.content;
+    const sortedArray = sortBy([{
+      type: 'toAction',
+      targetStr: 'to ',
+      idx: message.content.indexOf('to ')
+    }, {
+      type: 'inDuration',
+      targetStr: 'in ',
+      idx: message.content.indexOf('in ')
+    }, {
+      type: 'remindTarget',
+      targetStr: 'remind ',
+      idx: message.content.indexOf('remind ')
+    }], (reminderObj) => {
+      return reminderObj.idx
+    })
+    reverse(sortedArray)
 
-            message.reply(`Ok, I will remind you to ${action} in about ${action}`);
+    forEach(sortedArray, function(itemObj) {
+      const stringVal = originalMsgTxt.slice(itemObj.idx);
+      itemObj.responseStr = originalMsgTxt.slice(itemObj.idx)
+        .replace(itemObj.targetStr, '')
+        .trim();
+      originalMsgTxt = originalMsgTxt.replace(stringVal, '');
+    });
+
+    const reminderAction = find(sortedArray, function(o) { return isEqual(o.type, 'toAction')  });
+    const reminderTime = find(sortedArray, function(o) { return isEqual(o.type, 'inDuration')  });
+    const reminderTarget = find(sortedArray, function(o) { return isEqual(o.type, 'remindTarget')  });
+
+    console.log(sortedArray)
+
+    message.reply(`Ok, I will remind you to "${reminderAction.responseStr}" in about ${reminderTime.responseStr}`);
 
 
-    } else {
-        giveMuteReply(message);
-    }
+  } else {
+    giveMuteReply(message);
+  }
 }
 
 
 //
 // Listen to every message
 client.on('message', (message) => {
+    if(isBot(message.author)){ // if the message the bot talking
+      return; // ignore it
+    }
+
     if (message.channel.type === 'dm') { // message is a private DM message
         handleDirectMessage(message);
     } else if (startsWith(message.content, '!')) { // message is a command
