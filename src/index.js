@@ -1,6 +1,7 @@
 import { Client } from 'discord.js';
-import { startsWith, includes, sortBy, reverse, forEach, isEqual, find } from 'lodash';
+import { startsWith, includes, sortBy, reverse, forEach, isEqual, find, lowerCase, head, parseInt } from 'lodash';
 import * as firebase from 'firebase';
+import moment from 'moment';
 import { getGeneralChat, isJeuely, isBot, notJeuelyOrBot } from './helpers/common';
 import { bulkDelete, defaultDelete, purge } from './helpers/admin/commands';
 import { complimentMentionedUsers } from './helpers/compliments';
@@ -11,6 +12,7 @@ import { getFireBaseConfig } from './helpers/fire';
 //
 //
 const client = new Client();
+// const currentRemindersForUsers = []
 
 client.on('ready', () => {
   // start fireBase
@@ -71,7 +73,7 @@ const handleDirectMessage = (message) => {
   if (includes(message.content, 'remind ') &&
     includes(message.content, 'in ') &&
     includes(message.content, 'to ')) {
-    let originalMsgTxt = message.content;
+    let originalMsgTxt = lowerCase(message.content);
     const sortedArray = sortBy([{
       type: 'toAction',
       targetStr: 'to ',
@@ -97,18 +99,41 @@ const handleDirectMessage = (message) => {
       originalMsgTxt = originalMsgTxt.replace(stringVal, '');
     });
 
-    const reminderAction = find(sortedArray, function(o) { return isEqual(o.type, 'toAction')  });
-    const reminderTime = find(sortedArray, function(o) { return isEqual(o.type, 'inDuration')  });
-    const reminderTarget = find(sortedArray, function(o) { return isEqual(o.type, 'remindTarget')  });
-
-    console.log(sortedArray)
+    const reminderAction = find(sortedArray, (o) => isEqual(o.type, 'toAction') );
+    const reminderTime = find(sortedArray, (o) => isEqual(o.type, 'inDuration') );
+    const reminderTarget = find(sortedArray, (o) => isEqual(o.type, 'remindTarget') );
 
     message.reply(`Ok, I will remind you to "${reminderAction.responseStr}" in about ${reminderTime.responseStr}`);
-
+    setReminderTimeOutMsg(reminderTime.responseStr, reminderAction.responseStr, message);
 
   } else {
     giveMuteReply(message);
   }
+}
+
+const setReminderTimeOutMsg = (reminderString, actionString, message) => {
+  const containsHour = includes(reminderString, 'hour');
+    // if user did not specify time metric, assume it is minutes
+  let containsMinute = !containsHour || includes(reminderString, 'minute');
+
+  if(containsMinute && containsHour) {
+    message.reply(`This time format is kinda.... weird... 🤔`);
+    return;
+  }
+
+  const regexNumPattern = /\d+/g;
+  const number = parseInt(head(reminderString.match( regexNumPattern )))
+  let milliseconds = 0;
+  if(containsHour){
+    milliseconds = (number * 3600000);
+  }
+  if(containsMinute) {
+    milliseconds = (number * 60000);
+  }
+
+  setTimeout(function(){
+    message.reply(`Hey ${message.author}, you should "${actionString}"!`);
+  }, milliseconds);
 }
 
 
