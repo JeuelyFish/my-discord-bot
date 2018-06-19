@@ -12,12 +12,17 @@ import { getFireBaseConfig } from './helpers/fire';
 //
 //
 const client = new Client();
-// const currentRemindersForUsers = []
+const currentReminders = []
 
 client.on('ready', () => {
   // start fireBase
   firebase.initializeApp(getFireBaseConfig());
   console.info('Init Time: ', (new Date()).getTime());
+
+  // set up reminders
+  forEach(client.users.array(), function(user){
+      currentReminders.push( {username: user.username, id: user.id, reminder: null })
+  })
 
   // set up crons
   const purgeCron = dailyPurge(client);
@@ -103,15 +108,23 @@ const handleDirectMessage = (message) => {
     const reminderTime = find(sortedArray, (o) => isEqual(o.type, 'inDuration') );
     const reminderTarget = find(sortedArray, (o) => isEqual(o.type, 'remindTarget') );
 
-    message.reply(`Ok, I will remind you to "${reminderAction.responseStr}" in about ${reminderTime.responseStr}`);
-    setReminderTimeOutMsg(reminderTime.responseStr, reminderAction.responseStr, message);
+
+    const authorsReminder = find(currentReminders, (obj) => (obj.id === message.author.id));
+    if(authorsReminder.reminder === null){
+        authorsReminder.reminderAction = reminderAction;
+        message.reply(`Ok, I will remind you to "${reminderAction.responseStr}" in about ${reminderTime.responseStr}`);
+        setReminderTimeOutMsg(reminderTime.responseStr, reminderAction.responseStr, message, authorsReminder);
+    } else {
+        message.reply(`You already have a reminder set for "${authorsReminder.reminderAction.responseStr}"!`);
+    }
+
 
   } else {
     giveMuteReply(message);
   }
 }
 
-const setReminderTimeOutMsg = (reminderString, actionString, message) => {
+const setReminderTimeOutMsg = (reminderString, actionString, message, authorsReminder) => {
   const containsHour = includes(reminderString, 'hour');
     // if user did not specify time metric, assume it is minutes
   let containsMinute = !containsHour || includes(reminderString, 'minute');
@@ -131,8 +144,11 @@ const setReminderTimeOutMsg = (reminderString, actionString, message) => {
     milliseconds = (number * 60000);
   }
 
-  setTimeout(function(){
+
+  authorsReminder.reminder = setTimeout(() => {
     message.reply(`Hey ${message.author}, you should "${actionString}"!`);
+    clearTimeout(authorsReminder.reminder);
+    authorsReminder.reminder = null;
   }, milliseconds);
 }
 
